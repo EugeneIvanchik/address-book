@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
@@ -14,7 +13,12 @@ namespace address_book
         public ContactsHelper (IWebDriver driver) : base(driver)
         {
         }
-        public void AddNewContact(ContactData contact)
+        public ContactsHelper InitContactCreation()
+        {
+            driver.FindElement(By.LinkText("add new")).Click();
+            return this;
+        }
+        public ContactsHelper FillContactForm(ContactData contact)
         {
             driver.FindElement(By.Name("firstname")).Click();
             driver.FindElement(By.Name("firstname")).Clear();
@@ -23,7 +27,12 @@ namespace address_book
             driver.FindElement(By.Name("middlename")).SendKeys(contact.MiddleName);
             driver.FindElement(By.Name("lastname")).Clear();
             driver.FindElement(By.Name("lastname")).SendKeys(contact.LastName);
+            return this;
+        }
+        public ContactsHelper SubmitContactCreation()
+        {
             driver.FindElement(By.Name("submit")).Click();
+            return this;
         }
     }
 }

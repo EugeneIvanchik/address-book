@@ -12,11 +12,11 @@ namespace address_book
         [Test]
         public void GroupCreationTest()
         {
-            app.Navigator.OpenLoginPage();
-            app.LogInOut.Login(new UserAccount("admin", "secret"));
+            FirstGroupData group = new FirstGroupData("Group Name", "Group Header", "Group Footer");
             app.Navigator.OpenGroupsPage();
-            app.Group.CreateNewGroup(new FirstGroupData("Group Name", "Group Header", "Group Footer"));
-            app.Navigator.ReturnToGroupsPage();
+            app.Group.InitGroupCreation()
+                .CreateNewGroup(group)
+                .SubmitGroupCreation();
             app.LogInOut.Logout();
         }
 

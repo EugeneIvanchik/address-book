@@ -3,10 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
+
 
 namespace address_book
 {
@@ -18,6 +15,8 @@ namespace address_book
         public void SetupTest()
         {
             app = new Application();
+            app.Navigator.OpenLoginPage();
+            app.LogInOut.Login(new UserAccount("admin", "secret"));
         }
 
         [TearDown]
