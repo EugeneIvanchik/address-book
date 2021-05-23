@@ -13,12 +13,12 @@ namespace address_book
         [Test]
         public void AddContactTest()
         {
-            navigator.OpenLoginPage();
-            loginout.Login(new UserAccount("admin", "secret"));
-            navigator.OpenNewContactPage();
-            contact.AddNewContact(new ContactData("John", "Andrew", "Barrows"));
-            navigator.ReturnToHomePage();
-            loginout.Logout();
+            app.Navigator.OpenLoginPage();
+            app.LogInOut.Login(new UserAccount("admin", "secret"));
+            app.Navigator.OpenNewContactPage();
+            app.Contact.AddNewContact(new ContactData("John", "Andrew", "Barrows"));
+            app.Navigator.ReturnToHomePage();
+            app.LogInOut.Logout();
         }
     }
 }

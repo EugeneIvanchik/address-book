@@ -12,36 +12,18 @@ namespace address_book
 {
     public class TestBase
     {
-        public IWebDriver driver;
-        public string baseURL;
-        public ContactsHelper contact;
-        public GroupsHelper group;
-        public LogInOutHelper loginout;
-        public NavigatorHelper navigator;
+        public Application app;
 
         [SetUp]
         public void SetupTest()
         {
-            driver = new ChromeDriver();
-            baseURL = "http://localhost/addressbook";
-
-            group = new GroupsHelper(driver);
-            contact = new ContactsHelper(driver);
-            loginout = new LogInOutHelper(driver);
-            navigator = new NavigatorHelper(driver, baseURL);
+            app = new Application();
         }
 
         [TearDown]
         public void TeardownTest()
         {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
-            }
+            app.Stop();
         }
     }
 }
