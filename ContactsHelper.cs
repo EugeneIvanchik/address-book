@@ -10,8 +10,16 @@ namespace address_book
 {
     public class ContactsHelper : HelperBase
     {
-        public ContactsHelper (IWebDriver driver) : base(driver)
+        public ContactsHelper (Application manager) : base(manager)
         {
+        }
+        public void Create(ContactData contact)
+        {
+            manager.Contact.InitContactCreation();
+            FillContactForm(contact);
+            SubmitContactCreation();
+            manager.Navigator.ReturnToHomePage();
+            manager.LogInOut.Logout();
         }
         public ContactsHelper InitContactCreation()
         {

@@ -21,10 +21,17 @@ namespace address_book
         {
             driver = new ChromeDriver();
             baseURL = "http://localhost/addressbook";
-            group = new GroupsHelper(driver);
-            contact = new ContactsHelper(driver);
-            loginout = new LogInOutHelper(driver);
-            navigator = new NavigatorHelper(driver, baseURL);
+            group = new GroupsHelper(this);
+            contact = new ContactsHelper(this);
+            loginout = new LogInOutHelper(this);
+            navigator = new NavigatorHelper(this, baseURL);
+        }
+
+        public IWebDriver Driver {
+            get
+            {
+                return driver;
+            }
         }
 
         public ContactsHelper Contact

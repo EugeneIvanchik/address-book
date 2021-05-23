@@ -11,15 +11,23 @@ namespace address_book
 {
     public class GroupsHelper : HelperBase
     {
-        public GroupsHelper (IWebDriver driver) : base (driver)
+        public GroupsHelper (Application manager) : base (manager)
         {
+        }
+        public void Create(GroupData group)
+        {
+            manager.Navigator.OpenGroupsPage();
+            InitGroupCreation();
+            FillGroupForm(group);
+            SubmitGroupCreation();
+            manager.LogInOut.Logout();
         }
         public GroupsHelper InitGroupCreation()
         {
             driver.FindElement(By.Name("new")).Click();
             return this;
         }
-        public GroupsHelper CreateNewGroup(FirstGroupData group)
+        public GroupsHelper FillGroupForm(GroupData group)
         {
             driver.FindElement(By.Name("group_name")).Clear();
             driver.FindElement(By.Name("group_name")).SendKeys(group.Name);

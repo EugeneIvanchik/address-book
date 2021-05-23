@@ -14,9 +14,12 @@ namespace address_book
     {
         protected IWebDriver driver;
         protected string baseURL;
-        public HelperBase(IWebDriver driver)
+        protected Application manager;
+
+        public HelperBase(Application manager)
         {
-            this.driver = driver;
+            this.manager = manager;
+            this.driver = manager.Driver;
         }
     }
 }

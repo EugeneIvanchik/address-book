@@ -14,11 +14,7 @@ namespace address_book
         public void AddContactTest()
         {
             ContactData contact = new ContactData("John", "Andrew", "Barrows");
-            app.Contact.InitContactCreation()
-                .FillContactForm(contact)
-                .SubmitContactCreation();
-            app.Navigator.ReturnToHomePage();
-            app.LogInOut.Logout();
+            app.Contact.Create(contact);
         }
     }
 }

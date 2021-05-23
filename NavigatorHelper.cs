@@ -10,8 +10,8 @@ namespace address_book
 {
     public class NavigatorHelper : HelperBase
     {
-        public NavigatorHelper(IWebDriver driver, string baseURL)
-            : base(driver)
+        public NavigatorHelper(Application manager, string baseURL)
+            : base(manager)
         {
             this.baseURL = baseURL;
         }

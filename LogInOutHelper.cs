@@ -11,7 +11,7 @@ namespace address_book
 {
     public class LogInOutHelper : HelperBase
     {
-        public LogInOutHelper(IWebDriver driver) : base(driver)
+        public LogInOutHelper(Application manager) : base(manager)
         {
         }
 
