@@ -15,15 +15,41 @@ namespace address_book
         }
         public void Create(ContactData contact)
         {
-            manager.Contact.InitContactCreation();
+            manager.Navigator.OpenHomePage();
+            InitContactCreation();
             FillContactForm(contact);
             SubmitContactCreation();
-            manager.Navigator.ReturnToHomePage();
+            manager.Navigator.OpenHomePage();
             manager.LogInOut.Logout();
         }
+
+        public void Edit(int order, ContactData contact)
+        {
+            manager.Navigator.OpenHomePage();
+            OpenContact(order);
+            FillContactForm(contact);
+            SubmitContactUpdate();
+            manager.Navigator.OpenHomePage();
+            manager.LogInOut.Logout();
+        }
+        public void Delete(int order)
+        {
+            manager.Navigator.OpenHomePage();
+            SelectContact(order);
+            InitContactRemoval();
+            AcceptAlert();
+            manager.Navigator.OpenHomePage();
+            manager.LogInOut.Logout();
+        }
+
         public ContactsHelper InitContactCreation()
         {
             driver.FindElement(By.LinkText("add new")).Click();
+            return this;
+        }
+        public ContactsHelper InitContactRemoval()
+        {
+            driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
             return this;
         }
         public ContactsHelper FillContactForm(ContactData contact)
@@ -40,6 +66,26 @@ namespace address_book
         public ContactsHelper SubmitContactCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            return this;
+        }
+        public ContactsHelper OpenContact(int order)
+        {
+            driver.FindElement(By.XPath("(//img[@alt='Edit'])['" + order + "']")).Click();
+            return this;
+        }
+        public ContactsHelper SubmitContactUpdate()
+        {
+            driver.FindElement(By.Name("update")).Click();
+            return this;
+        }
+        public ContactsHelper AcceptAlert()
+        {
+            driver.SwitchTo().Alert().Accept();
+            return this;
+        }
+        public ContactsHelper SelectContact(int order)
+        {
+            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])['" + order + "']")).Click();
             return this;
         }
     }

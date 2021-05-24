@@ -22,6 +22,30 @@ namespace address_book
             SubmitGroupCreation();
             manager.LogInOut.Logout();
         }
+
+        public void Edit(int order, GroupData group)
+        {
+            manager.Navigator.OpenGroupsPage();
+            SelectGroup(order);
+            InitGroupEdit();
+            FillGroupForm(group);
+            SubmitGroupUpdate();
+            manager.Navigator.OpenHomePage();
+            manager.LogInOut.Logout();
+        }
+
+        public GroupsHelper InitGroupEdit()
+        {
+            driver.FindElement(By.Name("edit")).Click();
+            return this;
+        }
+
+        public GroupsHelper SelectGroup(int order)
+        {
+            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])['" + order + "']")).Click();
+            return this;
+        }
+
         public GroupsHelper InitGroupCreation()
         {
             driver.FindElement(By.Name("new")).Click();
@@ -40,6 +64,11 @@ namespace address_book
         public GroupsHelper SubmitGroupCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            return this;
+        }
+        public GroupsHelper SubmitGroupUpdate()
+        {
+            driver.FindElement(By.Name("update")).Click();
             return this;
         }
     }

@@ -19,13 +19,14 @@ namespace address_book
         {
             driver.Navigate().GoToUrl(baseURL);
         }
-        public void ReturnToHomePage()
-        {
-            driver.FindElement(By.LinkText("home page")).Click();
-        }
         public void OpenGroupsPage()
         {
             driver.FindElement(By.LinkText("groups")).Click();
+        }
+
+        internal void OpenHomePage()
+        {
+            driver.FindElement(By.LinkText("home")).Click();
         }
     }
 }
