@@ -14,6 +14,7 @@ namespace address_book
         public GroupsHelper (Application manager) : base (manager)
         {
         }
+
         public void Create(GroupData group)
         {
             manager.Navigator.OpenGroupsPage();
@@ -30,6 +31,14 @@ namespace address_book
             InitGroupEdit();
             FillGroupForm(group);
             SubmitGroupUpdate();
+            manager.Navigator.OpenHomePage();
+            manager.LogInOut.Logout();
+        }
+        public void Delete(int order)
+        {
+            manager.Navigator.OpenGroupsPage();
+            SelectGroup(order);
+            InitGroupRemoval();
             manager.Navigator.OpenHomePage();
             manager.LogInOut.Logout();
         }
@@ -69,6 +78,11 @@ namespace address_book
         public GroupsHelper SubmitGroupUpdate()
         {
             driver.FindElement(By.Name("update")).Click();
+            return this;
+        }
+        public GroupsHelper InitGroupRemoval()
+        {
+            driver.FindElement(By.Name("delete")).Click();
             return this;
         }
     }
