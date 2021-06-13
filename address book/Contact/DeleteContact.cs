@@ -10,24 +10,30 @@ namespace address_book
     [TestFixture]
     public class DeleteContact : AuthTestBase
     {
-        List<ContactData> oldGroups = new List<ContactData>();
-        List<ContactData> newGroups = new List<ContactData>();
+        List<ContactData> oldContacts = new List<ContactData>();
+        List<ContactData> newContacts = new List<ContactData>();
 
         [Test]
         public void DeleteContactTest()
         {
             app.Contact.CheckContactExists();
 
-            oldGroups = app.Contact.GetContactsList();
+            oldContacts = app.Contact.GetContactsList();
 
             int order = 0;
+            ContactData contactToBeDeleted = oldContacts[order];
             app.Contact.Delete(order);
 
-            newGroups = app.Contact.GetContactsList();
+            newContacts = app.Contact.GetContactsList();
 
-            oldGroups.RemoveAt(order);
+            oldContacts.RemoveAt(order);
 
-            Assert.AreEqual(oldGroups, newGroups);
+            Assert.AreEqual(oldContacts, newContacts);
+
+            foreach(ContactData contact in newContacts)
+            {
+                Assert.AreNotEqual(contact.Id, contactToBeDeleted.Id);
+            }
         }
     }
 }

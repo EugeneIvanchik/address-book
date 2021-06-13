@@ -12,10 +12,6 @@ namespace address_book
     {
         List<ContactData> oldContacts = new List<ContactData>();
         List<ContactData> newContacts = new List<ContactData>();
-        ContactData contactAfterEdit;
-        int orderBeforeEdit;
-        int orderAfterEdit;
-        int contactId;
         [Test]
         public void EditContactTest()
         {
@@ -26,25 +22,35 @@ namespace address_book
             oldContacts = app.Contact.GetContactsList();
 
             //create test data
-            contactAfterEdit = new ContactData("Pete", "Peterson");
+            ContactData newContactData = new ContactData("Frank", "Richardson");
 
-            //define order and id of contact that will be edited
-            orderBeforeEdit = 0;
-            contactId = app.Contact.GetIdByOrder(orderBeforeEdit);
+            //define order of contact that will be edited
+            int order = 0;
+
+            //remember contact that will be changed
+            ContactData contactToBeChanged = oldContacts[order];
 
             //make edit test
-            app.Contact.Edit(contactAfterEdit, orderBeforeEdit);
+            app.Contact.Edit(newContactData, order);
 
             //get the list of contacts after Edit
             newContacts = app.Contact.GetContactsList();
 
-            //define order of contact after edit using its id (that is unchangeble for every contact)
-            orderAfterEdit = app.Contact.FindOrderAfterEdit(contactId);
+            //edit contact in old list using List method instead of browser
+            oldContacts[order].FirstName = newContactData.FirstName;
+            oldContacts[order].LastName = newContactData.LastName;
 
-            //remove edited contact from the both lists to check that other contacts remained unchanged
-            oldContacts.RemoveAt(orderBeforeEdit);
-            newContacts.RemoveAt(orderAfterEdit);
+            //check both lists are equal
             Assert.AreEqual(oldContacts, newContacts);
+
+            //check that exactly needed contact was changed
+            foreach(ContactData contact in newContacts)
+            {
+                if(contact.Id == contactToBeChanged.Id)
+                {
+                    Assert.AreEqual(contact.FirstName + contact.LastName, contactToBeChanged.FirstName + contactToBeChanged.LastName);
+                }
+            }
         }
     }
 }

@@ -20,13 +20,20 @@ namespace address_book
 
             oldGroups = app.Group.GetGroupsList();
 
-            int order = 3;
+            int order = 1;
+            GroupData groupToBeDeleted = oldGroups[order];
+
             app.Group.Delete(order);
 
             newGroups = app.Group.GetGroupsList();
             oldGroups.RemoveAt(order);
 
             Assert.AreEqual(oldGroups, newGroups);
+
+            foreach(GroupData group in newGroups)
+            {
+                Assert.AreNotEqual(group.Id, groupToBeDeleted.Id);
+            }
         }
     }
 }

@@ -99,34 +99,15 @@ namespace address_book
             List<ContactData> groups = new List<ContactData>();
             manager.Navigator.OpenHomePage();
             ICollection<IWebElement> elements = driver.FindElements(By.XPath("//tr[@name='entry']"));
-            string firstName;
-            string lastName;
             foreach (IWebElement element in elements)
             {
-                firstName = element.FindElement(By.XPath("td[3]")).Text;
-                lastName = element.FindElement(By.XPath("td[2]")).Text;
-
-                groups.Add(new ContactData(firstName, lastName));
-            }
-            return groups;
-        }
-        public int GetIdByOrder(int order)
-        {
-            manager.Navigator.OpenHomePage();
-            IWebElement editableContact = driver.FindElement(By.XPath("//tr[@name = 'entry'][" + (order + 1) + "]/td[@class = 'center']/input"));
-            return int.Parse(editableContact.GetAttribute("id"));
-        }
-        public int FindOrderAfterEdit(int contactId)
-        {
-            manager.Navigator.OpenHomePage();
-            IReadOnlyCollection<IWebElement> contacts = driver.FindElements(By.XPath("//tr[@name = 'entry']/td[@class = 'center']/input"));
-            List<IWebElement> list = new List<IWebElement>(contacts);
-            return list.FindIndex(
-                delegate (IWebElement element)
+                groups.Add(new ContactData(element.FindElement(By.XPath("td[3]")).Text, element.FindElement(By.XPath("td[2]")).Text) 
                 {
-                    return int.Parse(element.GetAttribute("id")) == contactId;
+                    Id = element.FindElement(By.XPath("td[1]/input")).GetAttribute("id")
                 }
                 );
+            }
+            return groups;
         }
     }
 }

@@ -24,27 +24,40 @@ namespace address_book
             oldGroups = app.Group.GetGroupsList();
 
             //create test data
-            GroupData group = new GroupData("thor");
-            group.Header = "Group Header Updated";
-            group.Footer = "Group Footer Updated";
+            GroupData newGroupData = new GroupData("tree");
+            newGroupData.Header = "Group Header Updated";
+            newGroupData.Footer = "Group Footer Updated";
 
-            //define order and value of group that will be edited
-            int orderBeforeEdit = 3;
-            int groupValue = app.Group.GetValueByOrder(orderBeforeEdit);
+            //define order of group that will be edited
+            int order = 0;
+
+            //remember group that will be changed
+            GroupData groupToBeChanged = oldGroups[order];
 
             //make edit test
-            app.Group.Edit(group, orderBeforeEdit);
+            app.Group.Edit(newGroupData, order);
 
             //get the list of groups after Edit
             newGroups = app.Group.GetGroupsList();
 
-            //define order of group after edit using its value (that is unchangeble for every group)
-            int orderAfterEdit = app.Group.FindOrderAfterEdit(groupValue);
+            //edit group using List methods but not browser and compare then
+            oldGroups[order].Name = newGroupData.Name;
+            oldGroups[order].Header = newGroupData.Header;
+            oldGroups[order].Footer = newGroupData.Footer;
 
-            //remove edited group from the both lists to check that other groups remained unchanged
-            oldGroups.RemoveAt(orderBeforeEdit);
-            newGroups.RemoveAt(orderAfterEdit);
+            //sort both lists and check they are equal
+            oldGroups.Sort();
+            newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
+
+            //be sure that exactly needed group was changed
+            foreach (GroupData group in newGroups)
+            {
+                if(group.Id == groupToBeChanged.Id)
+                {
+                    Assert.AreEqual(newGroupData.Name, group.Name);
+                }
+            }
         }
     }
 }

@@ -24,19 +24,6 @@ namespace address_book
             SubmitGroupCreation();
             manager.Navigator.OpenGroupsPage();
         }
-
-        public List<GroupData> GetGroupsList()
-        {
-            List<GroupData> groups = new List<GroupData>();
-            manager.Navigator.OpenGroupsPage();
-            ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
-            foreach (IWebElement element in elements)
-            {
-                groups.Add(new GroupData(element.Text));
-            }
-            return groups;
-        }
-
         public void Edit(GroupData group, int order)
         {
             manager.Navigator.OpenGroupsPage();
@@ -105,23 +92,19 @@ namespace address_book
             updatedGroup.Footer = "basic footer";
             Create(new GroupData("basic name")); ;
         }
-        public int GetValueByOrder(int order)
+        public List<GroupData> GetGroupsList()
         {
+            List<GroupData> groups = new List<GroupData>();
             manager.Navigator.OpenGroupsPage();
-            IWebElement editableGroup = driver.FindElement(By.XPath("//span[@class = 'group'][" + (order + 1) + "]/input"));
-            return int.Parse(editableGroup.GetAttribute("value"));
-        }
-        public int FindOrderAfterEdit(int groupValue)
-        {
-            manager.Navigator.OpenGroupsPage();
-            IReadOnlyCollection<IWebElement> groups = driver.FindElements(By.XPath("//span[@class = 'group']/input"));
-            List<IWebElement> list = new List<IWebElement>(groups);
-            return list.FindIndex(
-                delegate (IWebElement element)
+            ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
+            foreach (IWebElement element in elements)
+            {
+                groups.Add(new GroupData(element.Text)
                 {
-                    return int.Parse(element.GetAttribute("value")) == groupValue;
-                }
-                );
+                    Id = element.FindElement(By.TagName("input")).GetAttribute("value")
+                });
+            }
+            return groups;
         }
     }
 }
