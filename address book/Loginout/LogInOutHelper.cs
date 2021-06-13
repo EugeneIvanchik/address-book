@@ -17,16 +17,38 @@ namespace address_book
 
         public void Login(UserAccount userAccount)
         {
-            driver.FindElement(By.Name("user")).Click();
-            driver.FindElement(By.Name("user")).Clear();
-            driver.FindElement(By.Name("user")).SendKeys(userAccount.Username);
-            driver.FindElement(By.Name("pass")).Clear();
-            driver.FindElement(By.Name("pass")).SendKeys(userAccount.Password);
+            if (IsLoggedIn())
+            {
+                if (IsLoggedIn(userAccount))
+                {
+                    return;
+                }
+                Logout();
+            }
+            Type(By.Name("user"), userAccount.Username);
+            Type(By.Name("pass"), userAccount.Password);
             driver.FindElement(By.XPath("//input[@value='Login']")).Click();
         }
+
+        public bool IsLoggedIn(UserAccount account)
+        {
+            return 
+            IsLoggedIn() 
+            && 
+            driver.FindElement(By.TagName("b")).Text == "(" + account.Username + ")";
+        }
+
+        public bool IsLoggedIn()
+        {
+            return IsElementPresent(By.Name("logout"));
+        }
+
         public void Logout()
         {
-            driver.FindElement(By.LinkText("Logout")).Click();
+            if (IsElementPresent(By.Name("logout")))
+            {
+                driver.FindElement(By.LinkText("Logout")).Click();
+            }
         }
     }
 }

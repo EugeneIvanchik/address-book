@@ -17,15 +17,27 @@ namespace address_book
         }
         public void OpenLoginPage()
         {
+            if (IsElementPresent(By.Name("LoginForm")))
+            {
+                return;
+            }
             driver.Navigate().GoToUrl(baseURL);
         }
         public void OpenGroupsPage()
         {
+            if(IsElementPresent(By.XPath("//*[@value='New group']")))
+            {
+                return;
+            }
             driver.FindElement(By.LinkText("groups")).Click();
         }
 
         internal void OpenHomePage()
         {
+            if (IsElementPresent(By.XPath("//*[@value='Add to']")))
+            {
+                return;
+            }
             driver.FindElement(By.LinkText("home")).Click();
         }
     }

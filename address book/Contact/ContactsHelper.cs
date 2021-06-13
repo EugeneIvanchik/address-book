@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Collections.Generic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
@@ -20,18 +21,17 @@ namespace address_book
             FillContactForm(contact);
             SubmitContactCreation();
             manager.Navigator.OpenHomePage();
-            manager.LogInOut.Logout();
         }
 
-        public void Edit(int order, ContactData contact)
+        public void Edit(ContactData contact, int order)
         {
             manager.Navigator.OpenHomePage();
             OpenContact(order);
             FillContactForm(contact);
             SubmitContactUpdate();
             manager.Navigator.OpenHomePage();
-            manager.LogInOut.Logout();
         }
+
         public void Delete(int order)
         {
             manager.Navigator.OpenHomePage();
@@ -39,7 +39,6 @@ namespace address_book
             InitContactRemoval();
             AcceptAlert();
             manager.Navigator.OpenHomePage();
-            manager.LogInOut.Logout();
         }
 
         public ContactsHelper InitContactCreation()
@@ -54,13 +53,9 @@ namespace address_book
         }
         public ContactsHelper FillContactForm(ContactData contact)
         {
-            driver.FindElement(By.Name("firstname")).Click();
-            driver.FindElement(By.Name("firstname")).Clear();
-            driver.FindElement(By.Name("firstname")).SendKeys(contact.FirstName);
-            driver.FindElement(By.Name("middlename")).Clear();
-            driver.FindElement(By.Name("middlename")).SendKeys(contact.MiddleName);
-            driver.FindElement(By.Name("lastname")).Clear();
-            driver.FindElement(By.Name("lastname")).SendKeys(contact.LastName);
+            Type(By.Name("firstname"), contact.FirstName);
+            Type(By.Name("middlename"), contact.MiddleName);
+            Type(By.Name("lastname"), contact.LastName);
             return this;
         }
         public ContactsHelper SubmitContactCreation()
@@ -70,7 +65,7 @@ namespace address_book
         }
         public ContactsHelper OpenContact(int order)
         {
-            driver.FindElement(By.XPath("(//img[@alt='Edit'])['" + order + "']")).Click();
+            driver.FindElement(By.XPath("(//img[@alt='Edit'])[" + (order + 1) + "]")).Click();
             return this;
         }
         public ContactsHelper SubmitContactUpdate()
@@ -85,8 +80,53 @@ namespace address_book
         }
         public ContactsHelper SelectContact(int order)
         {
-            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])['" + order + "']")).Click();
+            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])[" + (order + 1) + "]")).Click();
             return this;
+        }
+        public void CheckContactExists()
+        {
+            manager.Navigator.OpenHomePage();
+            if (IsElementPresent(By.XPath("//tr[2]")))
+            {
+                return;
+            }
+            ContactData contact = new ContactData("1name", "3name");
+            contact.MiddleName = "2name";
+            Create(contact);
+        }
+        public List<ContactData> GetContactsList()
+        {
+            List<ContactData> groups = new List<ContactData>();
+            manager.Navigator.OpenHomePage();
+            ICollection<IWebElement> elements = driver.FindElements(By.XPath("//tr[@name='entry']"));
+            string firstName;
+            string lastName;
+            foreach (IWebElement element in elements)
+            {
+                firstName = element.FindElement(By.XPath("td[3]")).Text;
+                lastName = element.FindElement(By.XPath("td[2]")).Text;
+
+                groups.Add(new ContactData(firstName, lastName));
+            }
+            return groups;
+        }
+        public int GetIdByOrder(int order)
+        {
+            manager.Navigator.OpenHomePage();
+            IWebElement editableContact = driver.FindElement(By.XPath("//tr[@name = 'entry'][" + (order + 1) + "]/td[@class = 'center']/input"));
+            return int.Parse(editableContact.GetAttribute("id"));
+        }
+        public int FindOrderAfterEdit(int contactId)
+        {
+            manager.Navigator.OpenHomePage();
+            IReadOnlyCollection<IWebElement> contacts = driver.FindElements(By.XPath("//tr[@name = 'entry']/td[@class = 'center']/input"));
+            List<IWebElement> list = new List<IWebElement>(contacts);
+            return list.FindIndex(
+                delegate (IWebElement element)
+                {
+                    return int.Parse(element.GetAttribute("id")) == contactId;
+                }
+                );
         }
     }
 }

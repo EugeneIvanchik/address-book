@@ -4,17 +4,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using NUnit.Framework;
 
-
 namespace address_book
 {
-    public class TestBase
+    public class AuthTestBase : TestBase
     {
-        public Application app;
-
         [SetUp]
-        public void SetupTest()
+        public void AuthSetupTest()
         {
-            app = Application.GetInstance();
+            app.LogInOut.Login(new UserAccount("admin", "secret"));
         }
     }
 }

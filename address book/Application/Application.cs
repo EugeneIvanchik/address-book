@@ -17,6 +17,8 @@ namespace address_book
         protected NavigatorHelper navigator;
         protected IWebDriver driver;
         protected string baseURL;
+
+        private static ThreadLocal<Application> app = new ThreadLocal<Application>();
         public Application()
         {
             driver = new ChromeDriver();
@@ -25,6 +27,31 @@ namespace address_book
             contact = new ContactsHelper(this);
             loginout = new LogInOutHelper(this);
             navigator = new NavigatorHelper(this, baseURL);
+        }
+
+        ~Application()
+        {
+            try
+            {
+                driver.Quit();
+            }
+            catch (Exception)
+            {
+                // Ignore errors if unable to close the browser
+            }
+        }
+
+        public static Application GetInstance()
+        {
+            if(! app.IsValueCreated)
+            {
+                Application newInstance = new Application();
+                newInstance.Navigator.OpenLoginPage();
+                app.Value = newInstance;
+                
+            }
+            return app.Value;
+
         }
 
         public IWebDriver Driver {
@@ -61,18 +88,6 @@ namespace address_book
             get
             {
                 return navigator;
-            }
-        }
-
-        public void Stop()
-        {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
             }
         }
     }

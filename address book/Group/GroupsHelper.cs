@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -21,26 +22,36 @@ namespace address_book
             InitGroupCreation();
             FillGroupForm(group);
             SubmitGroupCreation();
-            manager.LogInOut.Logout();
+            manager.Navigator.OpenGroupsPage();
         }
 
-        public void Edit(int order, GroupData group)
+        public List<GroupData> GetGroupsList()
+        {
+            List<GroupData> groups = new List<GroupData>();
+            manager.Navigator.OpenGroupsPage();
+            ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
+            foreach (IWebElement element in elements)
+            {
+                groups.Add(new GroupData(element.Text));
+            }
+            return groups;
+        }
+
+        public void Edit(GroupData group, int order)
         {
             manager.Navigator.OpenGroupsPage();
             SelectGroup(order);
             InitGroupEdit();
             FillGroupForm(group);
             SubmitGroupUpdate();
-            manager.Navigator.OpenHomePage();
-            manager.LogInOut.Logout();
+            manager.Navigator.OpenGroupsPage();
         }
         public void Delete(int order)
         {
             manager.Navigator.OpenGroupsPage();
             SelectGroup(order);
             InitGroupRemoval();
-            manager.Navigator.OpenHomePage();
-            manager.LogInOut.Logout();
+            manager.Navigator.OpenGroupsPage();
         }
 
         public GroupsHelper InitGroupEdit()
@@ -51,7 +62,7 @@ namespace address_book
 
         public GroupsHelper SelectGroup(int order)
         {
-            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])['" + order + "']")).Click();
+            driver.FindElement(By.XPath("(//input[@name = 'selected[]'])[" + (order + 1) + "]")).Click();
             return this;
         }
 
@@ -62,12 +73,9 @@ namespace address_book
         }
         public GroupsHelper FillGroupForm(GroupData group)
         {
-            driver.FindElement(By.Name("group_name")).Clear();
-            driver.FindElement(By.Name("group_name")).SendKeys(group.Name);
-            driver.FindElement(By.Name("group_header")).Clear();
-            driver.FindElement(By.Name("group_header")).SendKeys(group.Header);
-            driver.FindElement(By.Name("group_footer")).Clear();
-            driver.FindElement(By.Name("group_footer")).SendKeys(group.Footer);
+            Type(By.Name("group_name"), group.Name);
+            Type(By.Name("group_header"), group.Header);
+            Type(By.Name("group_footer"), group.Footer);
             return this;
         }
         public GroupsHelper SubmitGroupCreation()
@@ -84,6 +92,36 @@ namespace address_book
         {
             driver.FindElement(By.Name("delete")).Click();
             return this;
+        }
+        public void CheckGroupExists()
+        {
+            manager.Navigator.OpenGroupsPage();
+            if (IsElementPresent(By.XPath("//span[@class='group']")))
+            {
+                return;
+            }
+            GroupData updatedGroup = new GroupData("basic name");
+            updatedGroup.Header = "basic header";
+            updatedGroup.Footer = "basic footer";
+            Create(new GroupData("basic name")); ;
+        }
+        public int GetValueByOrder(int order)
+        {
+            manager.Navigator.OpenGroupsPage();
+            IWebElement editableGroup = driver.FindElement(By.XPath("//span[@class = 'group'][" + (order + 1) + "]/input"));
+            return int.Parse(editableGroup.GetAttribute("value"));
+        }
+        public int FindOrderAfterEdit(int groupValue)
+        {
+            manager.Navigator.OpenGroupsPage();
+            IReadOnlyCollection<IWebElement> groups = driver.FindElements(By.XPath("//span[@class = 'group']/input"));
+            List<IWebElement> list = new List<IWebElement>(groups);
+            return list.FindIndex(
+                delegate (IWebElement element)
+                {
+                    return int.Parse(element.GetAttribute("value")) == groupValue;
+                }
+                );
         }
     }
 }
