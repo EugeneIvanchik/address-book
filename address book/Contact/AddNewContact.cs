@@ -10,8 +10,8 @@ namespace address_book
     [TestFixture]
     public class AddContact : AuthTestBase
     {
-        List<ContactData> oldGroups = new List<ContactData>();
-        List<ContactData> newGroups = new List<ContactData>();
+        List<ContactData> oldContacts = new List<ContactData>();
+        List<ContactData> newContacts = new List<ContactData>();
 
         [Test]
         public void AddContactTest()
@@ -19,17 +19,19 @@ namespace address_book
             ContactData contact = new ContactData("John", "Swanson");
             contact.MiddleName = "Middlesboroughov";
 
-            oldGroups =  app.Contact.GetContactsList();
+            oldContacts =  app.Contact.GetContactsList();
 
             app.Contact.Create(contact);
 
-            newGroups = app.Contact.GetContactsList();
+            Assert.AreEqual(oldContacts.Count + 1, app.Contact.GetContactsCount());
 
-            oldGroups.Add(contact);
-            oldGroups.Sort();
-            newGroups.Sort();
+            newContacts = app.Contact.GetContactsList();
 
-            Assert.AreEqual(newGroups, oldGroups);
+            oldContacts.Add(contact);
+            oldContacts.Sort();
+            newContacts.Sort();
+
+            Assert.AreEqual(newContacts, oldContacts);
         }
     }
 }

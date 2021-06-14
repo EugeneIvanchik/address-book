@@ -33,6 +33,9 @@ namespace address_book
             //make edit test
             app.Contact.Edit(newContactData, order);
 
+            //before lists comparison be sure that their counts are equal
+            Assert.AreEqual(oldContacts.Count, app.Contact.GetContactsCount());
+
             //get the list of contacts after Edit
             newContacts = app.Contact.GetContactsList();
 

@@ -37,6 +37,9 @@ namespace address_book
             //make edit test
             app.Group.Edit(newGroupData, order);
 
+            //before lists comparison be sure that their counts are equal
+            Assert.AreEqual(oldGroups.Count, app.Group.GetGroupsCount());
+
             //get the list of groups after Edit
             newGroups = app.Group.GetGroupsList();
 

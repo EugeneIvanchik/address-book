@@ -25,7 +25,10 @@ namespace address_book
 
             app.Group.Delete(order);
 
+            Assert.AreEqual(oldGroups.Count - 1, app.Group.GetGroupsCount());
+
             newGroups = app.Group.GetGroupsList();
+
             oldGroups.RemoveAt(order);
 
             Assert.AreEqual(oldGroups, newGroups);

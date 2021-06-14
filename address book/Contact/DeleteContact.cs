@@ -24,6 +24,8 @@ namespace address_book
             ContactData contactToBeDeleted = oldContacts[order];
             app.Contact.Delete(order);
 
+            Assert.AreEqual(oldContacts.Count - 1, app.Contact.GetContactsCount());
+
             newContacts = app.Contact.GetContactsList();
 
             oldContacts.RemoveAt(order);

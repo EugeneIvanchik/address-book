@@ -22,13 +22,16 @@ namespace address_book
             oldGroups = app.Group.GetGroupsList();
 
             app.Group.Create(group);
+
+            Assert.AreEqual(oldGroups.Count + 1, app.Group.GetGroupsCount());
+
             newGroups = app.Group.GetGroupsList();
 
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
 
-            Assert.AreEqual(oldGroups, newGroups);
+            Assert.AreEqual(newGroups, oldGroups);
         }
         [Test]
         public void EmptyGroupCreationTest()
@@ -40,13 +43,16 @@ namespace address_book
             oldGroups = app.Group.GetGroupsList();
 
             app.Group.Create(group);
+
+            Assert.AreEqual(oldGroups.Count + 1, app.Group.GetGroupsCount());
+
             newGroups = app.Group.GetGroupsList();
 
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
 
-            Assert.AreEqual(oldGroups, newGroups);
+            Assert.AreEqual(newGroups, oldGroups);
         }
     }
 }

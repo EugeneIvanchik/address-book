@@ -16,6 +16,8 @@ namespace address_book
         {
         }
 
+        private List<GroupData> groupsListCache = null;
+
         public void Create(GroupData group)
         {
             manager.Navigator.OpenGroupsPage();
@@ -68,16 +70,19 @@ namespace address_book
         public GroupsHelper SubmitGroupCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
+            groupsListCache = null;
             return this;
         }
         public GroupsHelper SubmitGroupUpdate()
         {
             driver.FindElement(By.Name("update")).Click();
+            groupsListCache = null;
             return this;
         }
         public GroupsHelper InitGroupRemoval()
         {
             driver.FindElement(By.Name("delete")).Click();
+            groupsListCache = null;
             return this;
         }
         public void CheckGroupExists()
@@ -94,17 +99,24 @@ namespace address_book
         }
         public List<GroupData> GetGroupsList()
         {
-            List<GroupData> groups = new List<GroupData>();
-            manager.Navigator.OpenGroupsPage();
-            ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
-            foreach (IWebElement element in elements)
+            if (groupsListCache == null)
             {
-                groups.Add(new GroupData(element.Text)
+                groupsListCache = new List<GroupData>();
+                manager.Navigator.OpenGroupsPage();
+                ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
+                foreach (IWebElement element in elements)
                 {
-                    Id = element.FindElement(By.TagName("input")).GetAttribute("value")
-                });
+                    groupsListCache.Add(new GroupData(element.Text)
+                    {
+                        Id = element.FindElement(By.TagName("input")).GetAttribute("value")
+                    });
+                }
             }
-            return groups;
+            return new List<GroupData>(groupsListCache);
+        }
+        public int GetGroupsCount()
+        {
+            return driver.FindElements(By.CssSelector("span.group")).Count;
         }
     }
 }
